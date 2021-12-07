@@ -17,7 +17,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "json-server -p3001 --watch db.json"
+    "server": "json-server -p3001 --watch db.json",
+    "preinstall": "npm-force-resolutions"
   },
   "eslintConfig": {
     "extends": [
@@ -38,6 +39,11 @@
     ]
   },
   "devDependencies": {
-    "json-server": "^0.17.0"
+    "json-server": "^0.17.0",
+    "npm-force-resolutions": "^0.0.10"
+  },
+  "resolutions": {
+    "immer": ">=9.0.6",
+    "nth-check": ">=2.0.1"
   }
 }

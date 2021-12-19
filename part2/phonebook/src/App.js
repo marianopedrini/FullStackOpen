@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from './components/Filter';
 import Notification from './components/Notification';
 import PersonForm from './components/PersonForm';
-import Person from './components/Persons';
+import Person from './components/Person';
 import personService from './services/persons';
 
 const App = () => {
@@ -30,8 +30,7 @@ const App = () => {
       )
     ) {
       return personService.getAll().then((initialPersons) => {
-        let wantedPerson;
-        wantedPerson = initialPersons.filter(
+        let wantedPerson = initialPersons.filter(
           (each) => each.name.toLowerCase() === newName.toLowerCase()
         );
         if (
@@ -44,8 +43,9 @@ const App = () => {
             .update(data.id, data)
             .then((res) => console.log(res))
             .catch((error) => {
+              console.log(error);
               setNotification({
-                message: `Information of ${newName} has already been removed from server`,
+                message: error.response.data.error,
                 succesfully: false,
               });
             });
@@ -65,18 +65,30 @@ const App = () => {
       number: newNumber,
     };
 
-    personService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName('');
-      setNewNumber('');
-      setNotification({
-        message: `${newName} has been succesfully added`,
-        succesfully: true,
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName('');
+        setNewNumber('');
+        setNotification({
+          message: `${newName} has been succesfully added`,
+          succesfully: true,
+        });
+        setTimeout(() => {
+          setNotification({ message: null, succesfully: true });
+        }, 5000);
+      })
+      .catch((error) => {
+        setNotification({
+          message: error.response.data.error,
+          succesfully: false,
+        });
+        setTimeout(() => {
+          setNotification({ message: null, succesfully: true });
+        }, 5000);
+        console.log(error.response.data.error);
       });
-      setTimeout(() => {
-        setNotification({ message: null, succesfully: true });
-      }, 5000);
-    });
   };
 
   const handleChangeName = (e) => {
@@ -97,14 +109,19 @@ const App = () => {
     setFilteredPersons(result);
   };
 
-  const handleDelete = async (id) => {
-    let wantedPerson;
-    await personService.getAll().then((initialPersons) => {
-      wantedPerson = initialPersons.filter((each) => each.id === id);
-    });
+  const handleDelete = (id) => {
+    let wantedPerson = filteredPersons.filter((person) => person.id === id);
     if (window.confirm(`Delete ${wantedPerson[0].name}`)) {
       personService.remove(id).then((res) => {
         setPersons(persons.map((person) => (person.id !== id ? person : res)));
+        const msg = `${wantedPerson[0].name} succesfully deleted!`;
+        setNotification({
+          message: msg,
+          succesfully: true,
+        });
+        setTimeout(() => {
+          setNotification({ message: null, succesfully: true });
+        }, 5000);
       });
     }
   };

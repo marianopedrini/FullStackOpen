@@ -1,0 +1,12 @@
+GET http://localhost:3003/api/blogs/
+
+###
+POST http://localhost:3003/api/blogs/ 
+Content-Type: application/json
+
+{
+    "title": "My first blog with NODE.js", 
+    "author": "Mariano Pedrini",
+    "url": "/api/blogs/1",
+    "likes": "10"
+}

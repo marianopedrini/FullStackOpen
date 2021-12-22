@@ -5,8 +5,8 @@ POST http://localhost:3003/api/blogs/
 Content-Type: application/json
 
 {
-    "title": "My first blog with NODE.js", 
+    "title": "First article with NODE.js", 
     "author": "Mariano Pedrini",
-    "url": "/api/blogs/1",
-    "likes": "10"
+    "url": "/api/blogs/2",
+    "likes": "15"
 }
